@@ -1,0 +1,15 @@
+server:
+  port: 8089
+
+spring:
+  redis:
+    database: 0
+    host: 192.168.56.101
+    port: 6379
+    password: zs.1998
+
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    prefix: classpath:/templates/
+    suffix: .html

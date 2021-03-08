@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://cdn.staticfile.org/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
+<body>
+<div style="text-align: center;" >
+    您好，
+    <span id="user" style="font-size:20px">
+        请登录
+    </span>
+    <span>
+    欢迎登录
+    <span id="href">
+        此系统
+    </span>
+    </span>
+    <div id="logout">
+        <a href="#" onclick="logout()" >[退出登录]</a>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        $("#href").text(location.hostname);
+        var userCookie = $.cookie('user');
+        if (userCookie == null) {
+            var tmpTicket = getQueryVariable("tmpTicket");
+            if (tmpTicket != null) {
+                $.ajax({
+                    url: "http://hellosso.com:8089/verifyTmpTicket",
+                    data: {"tmpTicket": tmpTicket},
+                    type: 'POST',
+                    dataType: 'json',
+                    crossDomain: true, //设置跨域为true
+                    xhrFields: {
+                        withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
+                    },
+                    success: function (data) {
+                        var user = data.data;
+                        $.cookie("user", JSON.stringify(user))
+                        $("#user").text(user.username);
+                        localStorage.setItem("userId", user.id);
+                        window.location.href = "http://"+location.hostname+":"+location.port+"/hello";
+                    }
+                });
+            }
+        }else {
+            var obj = JSON.parse(userCookie);
+            console.log(obj)
+            $("#user").text(obj.username);
+        }
+    }
+
+    function logout(){
+        $.ajax({
+            url: "http://hellosso.com:8089/logout",
+            data: {"userId": localStorage.getItem("userId")},
+            type: 'POST',
+            dataType: 'json',
+            crossDomain: true, //设置跨域为true
+            xhrFields: {
+                withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
+            },
+            success: function (data) {
+                console.log(data);
+                if(data.code === 200) {
+                    alert(1);
+                    $.removeCookie('user');
+                    $("#logout").hide();
+                    $("#user").text("请登录");
+                    localStorage.removeItem("userId")
+                    // window.location.href = "http://" + location.hostname + ":" + location.port + "/hello";
+                }
+            }
+        });
+    }
+
+    // 获取url参数
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (false);
+    }
+</script>
+</body>
+</html>
