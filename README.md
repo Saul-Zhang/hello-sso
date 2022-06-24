@@ -30,5 +30,5 @@
 
   # 三、关于
 
-- 有关sso单点登录的介绍及运行效果，可以访问http://zsly.xyz/archives/sso 查看
+- 有关sso单点登录的介绍及运行效果，可以访问[http://zsly.xyz/archives/sso](https://zhsong.cn/archives/sso) 查看
 
